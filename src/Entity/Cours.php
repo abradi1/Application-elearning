@@ -16,39 +16,33 @@ class Cours
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $nom;
+    private $titre_cours;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
-
-    #[ORM\OneToMany(mappedBy: 'cours', targetEntity: User::class)]
-    private $id_professeur;
-
-    #[ORM\OneToOne(targetEntity: Forum::class, cascade: ['persist', 'remove'])]
-    private $id_forum;
-
-    #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'cours')]
-    private $id_classe;
-
-    #[ORM\OneToMany(mappedBy: 'id_cours', targetEntity: Chapitre::class)]
-    private $chapitres;
-
-    #[ORM\OneToMany(mappedBy: 'id_cours', targetEntity: Avis::class)]
-    private $avis;
-
-    #[ORM\OneToOne(targetEntity: Certificat::class, cascade: ['persist', 'remove'])]
-    private $id_certificat;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\File( "image/jpeg" , "image/png" , "image/tiff" , "image/svg+xml")]
     private $image;
+
+    #[ORM\ManyToOne(targetEntity: Enseignant::class, inversedBy: 'cours')]
+    private $id_enseignant;
+
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'cours')]
+    private $id_categorie;
+
+    #[ORM\OneToMany(mappedBy: 'id_cours', targetEntity: Lesson::class)]
+    private $lessons;
+
+    #[ORM\OneToMany(mappedBy: 'id_cours', targetEntity: Question::class)]
+    private $questions;
+
+    #[ORM\Column(type: 'float')]
+    private $prix;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $video;
 
     public function __construct()
     {
-        $this->id_professeur = new ArrayCollection();
-        $this->id_classe = new ArrayCollection();
-        $this->chapitres = new ArrayCollection();
-        $this->avis = new ArrayCollection();
+        $this->lessons = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,164 +50,14 @@ class Cours
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getTitreCours(): ?string
     {
-        return $this->nom;
+        return $this->titre_cours;
     }
 
-    public function setNom(string $nom): self
+    public function setTitreCours(string $titre_cours): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getIdProfesseur(): Collection
-    {
-        return $this->id_professeur;
-    }
-
-    public function addIdProfesseur(User $idProfesseur): self
-    {
-        if (!$this->id_professeur->contains($idProfesseur)) {
-            $this->id_professeur[] = $idProfesseur;
-            $idProfesseur->setCours($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdProfesseur(User $idProfesseur): self
-    {
-        if ($this->id_professeur->removeElement($idProfesseur)) {
-            // set the owning side to null (unless already changed)
-            if ($idProfesseur->getCours() === $this) {
-                $idProfesseur->setCours(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getIdForum(): ?Forum
-    {
-        return $this->id_forum;
-    }
-
-    public function setIdForum(?Forum $id_forum): self
-    {
-        $this->id_forum = $id_forum;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Classe>
-     */
-    public function getIdClasse(): Collection
-    {
-        return $this->id_classe;
-    }
-
-    public function addIdClasse(Classe $idClasse): self
-    {
-        if (!$this->id_classe->contains($idClasse)) {
-            $this->id_classe[] = $idClasse;
-        }
-
-        return $this;
-    }
-
-    public function removeIdClasse(Classe $idClasse): self
-    {
-        $this->id_classe->removeElement($idClasse);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Chapitre>
-     */
-    public function getChapitres(): Collection
-    {
-        return $this->chapitres;
-    }
-
-    public function addChapitre(Chapitre $chapitre): self
-    {
-        if (!$this->chapitres->contains($chapitre)) {
-            $this->chapitres[] = $chapitre;
-            $chapitre->setIdCours($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChapitre(Chapitre $chapitre): self
-    {
-        if ($this->chapitres->removeElement($chapitre)) {
-            // set the owning side to null (unless already changed)
-            if ($chapitre->getIdCours() === $this) {
-                $chapitre->setIdCours(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Avis>
-     */
-    public function getAvis(): Collection
-    {
-        return $this->avis;
-    }
-
-    public function addAvi(Avis $avi): self
-    {
-        if (!$this->avis->contains($avi)) {
-            $this->avis[] = $avi;
-            $avi->setIdCours($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvi(Avis $avi): self
-    {
-        if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getIdCours() === $this) {
-                $avi->setIdCours(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getIdCertificat(): ?Certificat
-    {
-        return $this->id_certificat;
-    }
-
-    public function setIdCertificat(?Certificat $id_certificat): self
-    {
-        $this->id_certificat = $id_certificat;
+        $this->titre_cours = $titre_cours;
 
         return $this;
     }
@@ -229,9 +73,116 @@ class Cours
 
         return $this;
     }
-    public function __toString()
+
+    public function getIdEnseignant(): ?Enseignant
     {
-        $res=$this->nom;
-        return (string) $res;
+        return $this->id_enseignant;
+    }
+
+    public function setIdEnseignant(?Enseignant $id_enseignant): self
+    {
+        $this->id_enseignant = $id_enseignant;
+
+        return $this;
+    }
+
+    public function getIdCategorie(): ?Categorie
+    {
+        return $this->id_categorie;
+    }
+
+    public function setIdCategorie(?Categorie $id_categorie): self
+    {
+        $this->id_categorie = $id_categorie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lesson>
+     */
+    public function getLessons(): Collection
+    {
+        return $this->lessons;
+    }
+
+    public function addLesson(Lesson $lesson): self
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons[] = $lesson;
+            $lesson->setIdCours($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lesson $lesson): self
+    {
+        if ($this->lessons->removeElement($lesson)) {
+            // set the owning side to null (unless already changed)
+            if ($lesson->getIdCours() === $this) {
+                $lesson->setIdCours(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Question>
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): self
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+            $question->setIdCours($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        if ($this->questions->removeElement($question)) {
+            // set the owning side to null (unless already changed)
+            if ($question->getIdCours() === $this) {
+                $question->setIdCours(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(){
+        return $this->titre_cours;
+    }
+
+    public function getPrix(): ?int
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(int $prix): self
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
+    public function setVideo(string $video): self
+    {
+        $this->video = $video;
+
+        return $this;
     }
 }

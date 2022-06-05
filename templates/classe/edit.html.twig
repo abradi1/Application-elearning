@@ -4,10 +4,34 @@
 
 {% block body %}
     <h1>Edit Classe</h1>
+                 {{ form_start(form) }}
+                    {{ form_errors(form) }}
 
-    {{ include('classe/_form.html.twig', {'button_label': 'Update'}) }}
+                    {{ form_row(form.nom) }}
+                    {{form_row(form.image,{ 'attr': {'onchange': 'file_changed()'} } )}}
+            
 
-    <a href="{{ path('app_classe_index') }}">back to list</a>
+                    <img id="img" src="{{ asset('img/course/small/'~ classe.image) }}" alt="course" class="card-img card-img-horizontal-lg sh-18 sw-lg-16 h-lg-100">
 
-    {{ include('classe/_delete_form.html.twig') }}
+                    {{ form_row(form.id_enseignant) }}
+                    {{ form_row(form.id_apprenant) }}
+                {{ include('classe/_form.html.twig', {'button_label': 'Update'}) }}
+        
+                {{ form_end(form) }}
+
+<script>
+
+function file_changed(){
+    var selectedFile = document.getElementById('classe_image').files[0];
+  var img = document.getElementById('img')
+
+  var reader = new FileReader();
+  reader.onload = function(){
+  img.src = this.result}
+  reader.readAsDataURL(selectedFile);
+ }
+
+</script>
+     
+    
 {% endblock %}

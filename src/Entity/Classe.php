@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ClasseRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClasseRepository::class)]
@@ -18,22 +16,14 @@ class Classe
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'classes')]
-    private $enseignant;
-
-
-    #[ORM\ManyToMany(targetEntity: Cours::class, mappedBy: 'id_classe')]
-    private $cours;
-
     #[ORM\Column(type: 'string', length: 255)]
-
     private $image;
 
-    public function __construct()
-    {
-      
-        $this->cours = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(targetEntity: Enseignant::class, inversedBy: 'classes')]
+    private $id_enseignant;
+
+    #[ORM\ManyToOne(targetEntity: Apprenant::class, inversedBy: 'classes')]
+    private $id_apprenant;
 
     public function getId(): ?int
     {
@@ -52,47 +42,6 @@ class Classe
         return $this;
     }
 
-    public function getEnseignant(): ?User
-    {
-        return $this->enseignant;
-    }
-
-    public function setEnseignant(?User $enseignant): self
-    {
-        $this->enseignant = $enseignant;
-
-        return $this;
-    }
-
-   
-
-    /**
-     * @return Collection<int, Cours>
-     */
-    public function getCours(): Collection
-    {
-        return $this->cours;
-    }
-
-    public function addCour(Cours $cour): self
-    {
-        if (!$this->cours->contains($cour)) {
-            $this->cours[] = $cour;
-            $cour->addIdClasse($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCour(Cours $cour): self
-    {
-        if ($this->cours->removeElement($cour)) {
-            $cour->removeIdClasse($this);
-        }
-
-        return $this;
-    }
-
     public function getImage(): ?string
     {
         return $this->image;
@@ -104,9 +53,28 @@ class Classe
 
         return $this;
     }
-    public function __toString()
+
+    public function getIdEnseignant(): ?Enseignant
     {
-        $res=$this->nom;
-        return (string) $res;
+        return $this->id_enseignant;
+    }
+
+    public function setIdEnseignant(?Enseignant $id_enseignant): self
+    {
+        $this->id_enseignant = $id_enseignant;
+
+        return $this;
+    }
+
+    public function getIdApprenant(): ?Apprenant
+    {
+        return $this->id_apprenant;
+    }
+
+    public function setIdApprenant(?Apprenant $id_apprenant): self
+    {
+        $this->id_apprenant = $id_apprenant;
+
+        return $this;
     }
 }

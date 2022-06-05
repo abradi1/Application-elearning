@@ -12,19 +12,29 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
+            ->add('email', EmailType::class, [
+                'attr' => [
+                    'placeholder' => 'Email'
+                ],
+            ]
+            )
             ->add('nom', TextType::class, [
                 // set it to FALSE to not display the label for this field
-                'label' => 'Nom',
+                    'attr' => [
+                        'placeholder' => 'Nom'
+                ],
             ])
             ->add('prenom', TextType::class, [
                 // set it to FALSE to not display the label for this field
-                'label' => 'Prenom',
+                'attr' => [
+                    'placeholder' => 'Prenom'
+            ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
@@ -50,6 +60,10 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+
+                'attr' => [
+                    'placeholder' => 'Password'
+            ],
             ])
         ;
     }

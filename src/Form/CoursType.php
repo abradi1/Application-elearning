@@ -7,19 +7,31 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Enseignant;
+use App\Entity\Categorie;
 
 class CoursType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('description')
+            ->add('titre_cours')
             ->add('image',FileType::class,array('data_class'=> null, 'label' => 'Image','label' => false ))
-     
-            ->add('id_forum')
-            ->add('id_classe')
-            ->add('id_certificat')
+            ->add('video',FileType::class,array('data_class'=> null, 'label' => 'Video','label' => false ))
+            ->add('id_enseignant',EntityType::class, [
+                'class'=> Enseignant::class,
+                'choice_label'=>'nom',
+                'expanded'=>false,
+                'multiple'=>false
+            ])
+            ->add('id_categorie',EntityType::class, [
+                'class'=> Categorie::class,
+                'choice_label'=>'nom',
+                'expanded'=>false,
+                'multiple'=>false
+            ])
+            ->add('prix')
         ;
     }
 

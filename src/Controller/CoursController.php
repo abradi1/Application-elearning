@@ -38,9 +38,25 @@ class CoursController extends AbstractController
                     $fileName
                 );
             } catch (FileException $e) {
-                // ... handle exception if something happens during file upload
             }   $cour->setImage($fileName);
-            $coursRepository->add($cour);
+
+            // Partie Video
+
+            $fileVideo = $form->get('video')->getData();
+            
+            $fileNameV = md5(uniqid()).'.'.$fileVideo->guessExtension();
+            try {
+                $fileVideo->move(
+                    $this->getParameter('videos_directory'),
+                    $fileNameV
+                );
+            } catch (FileException $e) {
+            }   $cour->setVideo($fileNameV);
+
+
+            
+            $coursRepository->add($cour, true);
+
             return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -50,11 +66,34 @@ class CoursController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_cours_show', methods: ['GET'])]
+    /*#[Route('/{id}', name: 'app_cours_show', methods: ['GET'])]
     public function show(Cours $cour): Response
     {
         return $this->render('cours/show.html.twig', [
             'cour' => $cour,
+        ]);
+    }*/
+
+  /**
+     * @Route("/show_cours" , name="app_cours_show")
+     */
+    public function show(CoursRepository $coursRepository): Response
+    {
+        return $this->render('cours/show.html.twig', [
+            'cours' => $coursRepository->findAll(),
+        ]);
+    }
+
+     /**
+     * @Route("/details_cours/{id}" , name="app_cours_details")
+     */
+    public function details(CoursRepository $coursRepository,$id): Response
+    {
+        $cours= $coursRepository->find($id);
+        //dd($cours->getIdEnseignant());
+        return $this->render('cours/details.html.twig', [
+            'cours' => $cours,
+            'ce'=>$cours->getIdEnseignant()
         ]);
     }
 
@@ -65,17 +104,19 @@ class CoursController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-             /** @var UploadedFile $uploadedFile */
-             $uploadedFile = $form['image']->getData();
-             $destination = $this->getParameter('kernel.project_dir').'/public/uploads';
-             $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-             $newFilename = Urlizer::urlize($originalFilename).'-'.uniqid().'.'.$uploadedFile->guessExtension();
-             $uploadedFile->move(
-                 $destination,
-                 $newFilename
-             );
-             $cour->setImageFilename($newFilename);
-            $coursRepository->add($cour);
+            $file = $form->get('image')->getData();
+            
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            try {
+                $file->move(
+                    $this->getParameter('images_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }   $cour->setImage($fileName);
+            $coursRepository->add($cour, true);
+
             return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -89,7 +130,7 @@ class CoursController extends AbstractController
     public function delete(Request $request, Cours $cour, CoursRepository $coursRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$cour->getId(), $request->request->get('_token'))) {
-            $coursRepository->remove($cour);
+            $coursRepository->remove($cour, true);
         }
 
         return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);

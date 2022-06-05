@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ChapitreRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChapitreRepository::class)]
@@ -18,16 +16,8 @@ class Chapitre
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
-    #[ORM\OneToMany(mappedBy: 'id_chapitre', targetEntity: Lesson::class)]
-    private $lessons;
-
-    #[ORM\ManyToOne(targetEntity: Cours::class, inversedBy: 'chapitres')]
-    private $id_cours;
-
-    public function __construct()
-    {
-        $this->lessons = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(targetEntity: Lesson::class, inversedBy: 'chapitres')]
+    private $id_lesson;
 
     public function getId(): ?int
     {
@@ -46,44 +36,14 @@ class Chapitre
         return $this;
     }
 
-    /**
-     * @return Collection<int, Lesson>
-     */
-    public function getLessons(): Collection
+    public function getIdLesson(): ?Lesson
     {
-        return $this->lessons;
+        return $this->id_lesson;
     }
 
-    public function addLesson(Lesson $lesson): self
+    public function setIdLesson(?Lesson $id_lesson): self
     {
-        if (!$this->lessons->contains($lesson)) {
-            $this->lessons[] = $lesson;
-            $lesson->setIdChapitre($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLesson(Lesson $lesson): self
-    {
-        if ($this->lessons->removeElement($lesson)) {
-            // set the owning side to null (unless already changed)
-            if ($lesson->getIdChapitre() === $this) {
-                $lesson->setIdChapitre(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getIdCours(): ?Cours
-    {
-        return $this->id_cours;
-    }
-
-    public function setIdCours(?Cours $id_cours): self
-    {
-        $this->id_cours = $id_cours;
+        $this->id_lesson = $id_lesson;
 
         return $this;
     }

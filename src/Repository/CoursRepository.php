@@ -4,11 +4,12 @@ namespace App\Repository;
 
 use App\Entity\Cours;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
+ * @extends ServiceEntityRepository<Classe>
+ *
  * @method Cours|null find($id, $lockMode = null, $lockVersion = null)
  * @method Cours|null findOneBy(array $criteria, array $orderBy = null)
  * @method Cours[]    findAll()
@@ -21,64 +22,24 @@ class CoursRepository extends ServiceEntityRepository
         parent::__construct($registry, Cours::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function add(Cours $entity, bool $flush = true): void
+    public function add(Cours $entity, bool $flush = false): void
     {
-        $this->_em->persist($entity);
+        $entityManager=$this->getEntityManager();
+        $entityManager->persist($entity);
+        $entityManager->flush();
+        //$this->getEntityManager()->persist($entity);
+
+        /*if ($flush) {
+            $this->getEntityManager()->flush();
+        }*/
+    }
+
+    public function remove(Cours $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function remove(Cours $entity, bool $flush = true): void
-    {
-        $this->_em->remove($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
-    // /**
-    //  * @return Cours[] Returns an array of Cours objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Cours
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-    public function getOneCourse($id)
-    {
-        return $this->createQueryBuilder('u')
-            ->where('u.id='.$id)
-            ->getQuery()
-            ->getArrayResult()
-        ;
     }
 }

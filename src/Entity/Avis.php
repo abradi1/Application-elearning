@@ -14,37 +14,58 @@ class Avis
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $message;
+    private $user_name;
 
-    #[ORM\ManyToOne(targetEntity: Cours::class, inversedBy: 'avis')]
-    private $id_cours;
+    #[ORM\Column(type: 'integer')]
+    private $user_rating;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $user_review;
+
+  
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMessage(): ?string
+    public function getUserName(): ?string
     {
-        return $this->message;
+        return $this->user_name;
     }
 
-    public function setMessage(string $message): self
+    public function setUserName(string $user_name): self
     {
-        $this->message = $message;
+        $this->user_name = $user_name;
 
         return $this;
     }
 
-    public function getIdCours(): ?Cours
+    public function getUserRating(): ?int
     {
-        return $this->id_cours;
+        return $this->user_rating;
     }
 
-    public function setIdCours(?Cours $id_cours): self
+    public function setUserRating(int $user_rating): self
     {
-        $this->id_cours = $id_cours;
+        $this->user_rating = $user_rating;
 
         return $this;
     }
+
+    public function getUserReview(): ?string
+    {
+        return $this->user_review;
+    }
+
+    public function setUserReview(string $user_review): self
+    {
+        $this->user_review = $user_review;
+
+        return $this;
+    }
+
+   
+
+    
 }

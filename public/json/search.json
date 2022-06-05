@@ -5,15 +5,15 @@
     },
     {
         "label": "Dashboards > School",
-        "url": "Dashboards.School.html"
+        "url": "classe"
     },
     {
         "label": "Courses > Explore",
-        "url": "Course.Explore.html"
+        "url": "cours"
     },
     {
         "label": "Courses > List",
-        "url": "Course.List.html"
+        "url": "cours/show_cours"
     },
     {
         "label": "Courses > Detail",

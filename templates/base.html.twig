@@ -58,21 +58,25 @@
           <!-- Logo End -->
 
           <!-- Language Switch Start -->
-          <div class="language-switch-container">
+          <!--<div class="language-switch-container">
             <button class="btn btn-empty language-button dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">EN</button>
             <div class="dropdown-menu">
               <a href="#" class="dropdown-item">DE</a>
               <a href="#" class="dropdown-item active">EN</a>
               <a href="#" class="dropdown-item">ES</a>
             </div>
-          </div>
+          </div> -->
           <!-- Language Switch End -->
 
           <!-- User Menu Start -->
           <div class="user-container d-flex">
             <a href="#" class="d-flex user position-relative" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img class="profile" alt="profile" src="img/profile/profile-3.webp" />
-              <div class="name">Lisa Jackson</div>
+              <img class="profile" alt="profile" src="img/profile/profile-11.webp" />
+
+                {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                <div class="name">{{app.user.prenom }} {{app.user.nom }}</div>
+                          {%endif%}
+              
             </a>
             <div class="dropdown-menu dropdown-menu-end user-menu wide">
               <div class="row mb-3 ms-0 me-0">
@@ -81,9 +85,7 @@
                 </div>
                 <div class="col-6 ps-1 pe-1">
                   <ul class="list-unstyled">
-                    <li>
-                      <a href="#">User Info</a>
-                    </li>
+                   
                     <li>
                       <a href="#">Preferences</a>
                     </li>
@@ -151,13 +153,19 @@
                 <div class="col-6 pe-1 ps-1">
                   <ul class="list-unstyled">
                     <li>
-                      <a href="#">
-                        <i data-acorn-icon="gear" class="me-2" data-acorn-size="17"></i>
-                        <span class="align-middle">Settings</span>
+
+                {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                    <a href="{{ path('app_profil', {'id': app.user.id}) }}" >
+                {% endif %}
+                  
+         
+          
+                        
+                      <span class="align-middle">Settings</span>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="{{ path('app_logout')}}">
                         <i data-acorn-icon="logout" class="me-2" data-acorn-size="17"></i>
                         <span class="align-middle">Logout</span>
                       </a>
@@ -177,9 +185,10 @@
               </a>
             </li>
             <li class="list-inline-item">
-              <a href="#" id="pinButton" class="pin-button">
-                <i data-acorn-icon="lock-on" class="unpin" data-acorn-size="18"></i>
-                <i data-acorn-icon="lock-off" class="pin" data-acorn-size="18"></i>
+            
+              <a href="{{  path('app_login')  }}" id="userButton" class="user-button">
+                <i data-acorn-icon="user" class="user" data-acorn-size="18"></i>
+               
               </a>
             </li>
             <li class="list-inline-item">
@@ -257,7 +266,7 @@
                 </a>
                 <ul id="courses">
                   <li>
-                    <a href="Course.Explore.html">
+                    <a href="{{path ('app_cours_show')}}">
                       <span class="label">Explore</span>
                     </a>
                   </li>
@@ -267,7 +276,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="Course.Detail.html">
+                    <a href="{{path ('app_cours_index')}}">
                       <span class="label">Detail</span>
                     </a>
                   </li>

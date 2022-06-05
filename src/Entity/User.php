@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 /**
- * @ORM\InheritanceType("JOINED")
+ * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorMap({"user" = "User"})
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -21,7 +21,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    protected $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
@@ -38,11 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
-    /*#[ORM\OneToMany(mappedBy: 'enseignant', targetEntity: Classe::class)]
-    private $classes;
-
-    #[ORM\ManyToOne(targetEntity: Cours::class, inversedBy: 'id_professeur')]
-    private $cours;*/
+    
 
     public function __construct()
     {
@@ -162,47 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Classe>
-     */
-    public function getClasses(): Collection
-    {
-        return $this->classes;
-    }
 
-    public function addClass(Classe $class): self
-    {
-        if (!$this->classes->contains($class)) {
-            $this->classes[] = $class;
-            $class->setEnseignant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeClass(Classe $class): self
-    {
-        if ($this->classes->removeElement($class)) {
-            // set the owning side to null (unless already changed)
-            if ($class->getEnseignant() === $this) {
-                $class->setEnseignant(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getCours(): ?Cours
-    {
-        return $this->cours;
-    }
-
-    public function setCours(?Cours $cours): self
-    {
-        $this->cours = $cours;
-
-        return $this;
-    }
     public function __toString()
     {
         $res=$this->nom;

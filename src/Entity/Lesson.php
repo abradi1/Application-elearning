@@ -19,18 +19,21 @@ class Lesson
     private $nom;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
+    private $image;
+
+    #[ORM\ManyToOne(targetEntity: Cours::class, inversedBy: 'lessons')]
+    private $id_cours;
 
     #[ORM\OneToMany(mappedBy: 'id_lesson', targetEntity: Devoir::class)]
     private $devoirs;
 
-    #[ORM\ManyToOne(targetEntity: Chapitre::class, inversedBy: 'lessons')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $id_chapitre;
+    #[ORM\OneToMany(mappedBy: 'id_lesson', targetEntity: Chapitre::class)]
+    private $chapitres;
 
     public function __construct()
     {
         $this->devoirs = new ArrayCollection();
+        $this->chapitres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,14 +53,26 @@ class Lesson
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getImage(): ?string
     {
-        return $this->description;
+        return $this->image;
     }
 
-    public function setDescription(string $description): self
+    public function setImage(string $image): self
     {
-        $this->description = $description;
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getIdCours(): ?Cours
+    {
+        return $this->id_cours;
+    }
+
+    public function setIdCours(?Cours $id_cours): self
+    {
+        $this->id_cours = $id_cours;
 
         return $this;
     }
@@ -92,15 +107,37 @@ class Lesson
         return $this;
     }
 
-    public function getIdChapitre(): ?Chapitre
+    /**
+     * @return Collection<int, Chapitre>
+     */
+    public function getChapitres(): Collection
     {
-        return $this->id_chapitre;
+        return $this->chapitres;
     }
 
-    public function setIdChapitre(?Chapitre $id_chapitre): self
+    public function addChapitre(Chapitre $chapitre): self
     {
-        $this->id_chapitre = $id_chapitre;
+        if (!$this->chapitres->contains($chapitre)) {
+            $this->chapitres[] = $chapitre;
+            $chapitre->setIdLesson($this);
+        }
 
         return $this;
+    }
+
+    public function removeChapitre(Chapitre $chapitre): self
+    {
+        if ($this->chapitres->removeElement($chapitre)) {
+            // set the owning side to null (unless already changed)
+            if ($chapitre->getIdLesson() === $this) {
+                $chapitre->setIdLesson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(){
+        return $this->nom;
     }
 }

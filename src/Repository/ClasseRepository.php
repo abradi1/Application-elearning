@@ -4,11 +4,12 @@ namespace App\Repository;
 
 use App\Entity\Classe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
+ * @extends ServiceEntityRepository<Classe>
+ *
  * @method Classe|null find($id, $lockMode = null, $lockVersion = null)
  * @method Classe|null findOneBy(array $criteria, array $orderBy = null)
  * @method Classe[]    findAll()
@@ -21,56 +22,73 @@ class ClasseRepository extends ServiceEntityRepository
         parent::__construct($registry, Classe::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function add(Classe $entity, bool $flush = true): void
+    public function add(Classe $entity, bool $flush = false): void
     {
-        $this->_em->persist($entity);
+        $entityManager=$this->getEntityManager();
+        $entityManager->persist($entity);
+        $entityManager->flush();
+        //$this->getEntityManager()->persist($entity);
+
+        /*if ($flush) {
+            $this->getEntityManager()->flush();
+        }*/
+    }
+
+    public function remove(Classe $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function remove(Classe $entity, bool $flush = true): void
-    {
-        $this->_em->remove($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
+//    /**
+//     * @return Classe[] Returns an array of Classe objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('c')
+//            ->andWhere('c.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('c.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    // /**
-    //  * @return Classe[] Returns an array of Classe objects
-    //  */
-    /*
-    public function findByExampleField($value)
+//    public function findOneBySomeField($value): ?Classe
+//    {
+//        return $this->createQueryBuilder('c')
+//            ->andWhere('c.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
+
+public function getOneClasse($id)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('u')
+            ->where('u.id='.$id)
             ->getQuery()
-            ->getResult()
+            ->getArrayResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Classe
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    public function findClasseByIdEnseignant($id){
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT e
+            FROM App\Entity\Enseignant e, App\Entity\Classe c
+            WHERE c.id_enseignant = e.id and c.id_enseignant= :id
+            '
+        )->setParameter('id', $id);
+
+        // returns an array of Product objects
+        return $query->getResult();
+    
     }
-    */
 }

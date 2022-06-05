@@ -14,21 +14,36 @@ class Certificat
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $libellé;
+    private $nom;
+
+    #[ORM\ManyToOne(targetEntity: Apprenant::class, inversedBy: 'certificats')]
+    private $id_apprenant;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLibellé(): ?string
+    public function getNom(): ?string
     {
-        return $this->libellé;
+        return $this->nom;
     }
 
-    public function setLibellé(string $libellé): self
+    public function setNom(string $nom): self
     {
-        $this->libellé = $libellé;
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getIdApprenant(): ?Apprenant
+    {
+        return $this->id_apprenant;
+    }
+
+    public function setIdApprenant(?Apprenant $id_apprenant): self
+    {
+        $this->id_apprenant = $id_apprenant;
 
         return $this;
     }

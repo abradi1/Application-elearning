@@ -14,13 +14,9 @@ class Devoir
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $type;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $description;
+    private $nom;
 
     #[ORM\ManyToOne(targetEntity: Lesson::class, inversedBy: 'devoirs')]
-    #[ORM\JoinColumn(nullable: false)]
     private $id_lesson;
 
     public function getId(): ?int
@@ -28,26 +24,14 @@ class Devoir
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getNom(): ?string
     {
-        return $this->type;
+        return $this->nom;
     }
 
-    public function setType(string $type): self
+    public function setNom(string $nom): self
     {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
+        $this->nom = $nom;
 
         return $this;
     }

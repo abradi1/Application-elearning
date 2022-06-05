@@ -1,121 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categories{% endblock %}
+{% block title %}Classe index{% endblock %}
 
 {% block body %}
-<!-- Title Start -->
-<section class="scroll-section" id="title">
-  <div class="page-title-container">
-    <h1 class="mb-0 pb-0 display-4">Categorie</h1>
-    <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
-      <ul class="breadcrumb pt-0">
-        <li class="breadcrumb-item"><a href="Dashboards.Default.html">Home</a></li>
-        <li class="breadcrumb-item"><a href="Interface.html">Interface</a></li>
-        <li class="breadcrumb-item"><a href="Interface.Components.html">Components</a></li>
-
-      </ul>
-    </nav>
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-
-    <a class="btn btn-icon btn-icon-only btn-outline-secondary mb-1" href="{{ path('app_classe_new') }}"><i data-acorn-icon="plus"></i></a>
-   
-    </div>
-  </div>
-</section>
-<!-- Title End -->
-
-
     <h1>Classe index</h1>
- <div class="row d-none d-lg-flex mb-3 g-0">
-            <div class="col-auto">
-              <div class="sw-lg-16 sh-1"></div>
-            </div>
-            <div class="col">
-              <div class="row gx-2 px-5">
-                <div class="col-5">
-                  <div class="text-muted text-small">Classe</div>
-                </div>
-                <div class="col-3">
-                  <div class="text-muted text-small">Enseignant</div>
-                </div>
-             <div class="col-3">
-                  <div class="text-muted text-small">Action</div>
-                </div>
-              </div>
-            </div>
-          </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                
+                <th>Nom</th>
+                <th>Image</th>
+                <th>Enseignant</th>
+                <th>Apprenant</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for classe in classes %}
-            <div class="row g-3 mb-5">
-            <div class="col-sm-6 col-lg-12">
-              
-              <div class="card">
-                <div class="row g-0 h-auto sh-lg-12">
-                  <div class="col-12 col-lg-auto h-100">
-             <img src="{{ asset('img/course/small/'~ classe.image) }}"  alt="course" class="card-img card-img-horizontal-lg sh-18 sw-lg-16 h-lg-100" />
-                  </div>
-                  <div class="col-12 col-lg p-0 h-100">
-                    <div class="card-body h-100">
-               
-                      <div class="row gx-2 d-flex h-100 align-items-lg-center">
-                        
-                          
-                        <div class="col-lg-5 mb-2 mb-lg-1">
-                          <a  class=" body-link">
-                            <div class="lh-1-5 mb-0">{{classe.nom}}</div>
-                          </a>
-                        </div>
-                        <div class="col-lg-3">
-                          <div class="row gx-2 align-items-center">
-                            <div class="col-auto d-lg-none">
-                              <div class="sw-3 sh-4 d-flex justify-content-center align-items-center">
-                                <i data-acorn-icon="clock" class="text-primary"></i>
-                              </div>
-                            </div>
-                            <div class="col col-lg-12">
-                              <div class="row g-0">
-                            
-                                <div class="col-auto col-lg-12">
-                                  <div class="sh-4 d-flex align-items-center text-alternate">{{classe.enseignant}}</div>
-                                </div>
-       
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                            <div class="col-lg-3">
-                          <div class="row gx-2 align-items-center">
-                            <div class="col-auto d-lg-none">
-                              <div class="sw-3 sh-4 d-flex justify-content-center align-items-center">
-                                <i data-acorn-icon="clock" class="text-primary"></i>
-                              </div>
-                            </div>
-                            <div class="col col-lg-12">
-                              <div class="row g-0">
-                            
-                                  <div class="col-auto col-lg-12">
-                                  <div class="sh-4 d-flex align-items-center text-alternate">      <a href="{{ path('app_classe_show', {'id': classe.id}) }}">show</a>
-                    <a href="{{ path('app_classe_edit', {'id': classe.id}) }}">edit</a></div>
-             
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-            
-                       
-                    </div>
-                  </div>
-                </div>
-                      
-                 
-              </div>
-           
-            </div>
-    
-          
-            
-        </div>
-                 
+            <tr>
+                
+                <td>{{ classe.nom }}</td>
+                <td>
+                    <img id="image" src="{{ asset('img/course/small/'~ classe.image) }}"  
+                            class="card-img card-img-horizontal-lg sh-18 sw-lg-16 h-lg-100">  </td>
+                <td>{{ classe.idEnseignant }}</td>
+                <td>{{ classe.idApprenant }}</td>
+                <td>
+                    <a href="{{ path('app_classe_show', {'id': classe.id}) }}"
+                    <button onclick="modalUpdate({{classe.id }})"
+                    class="btn btn-icon btn-icon-only btn-outline-secondary mb-1" data-bs-toggle="modal"
+                data-bs-target="#show" title="Show"><i class="bi bi-eye"></i>
+                    </a>
+
+                    
+
+
+                    <a href="{{ path('app_classe_edit', {'id': classe.id}) }}" class="btn btn-icon btn-icon-only btn-outline-secondary mb-1"
+                    title="Modifier"><i class="bi bi-pencil-square"></i></a> 
+                </td>
+            </tr>
         {% else %}
             <tr>
                 <td colspan="4">no records found</td>
@@ -124,4 +48,74 @@
         </tbody>
     </table>
 
+   
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+  integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+   function modalUpdate(id){
+    /* récuperation des données du forum séléctioné via axios */
+        axios.get("getInfoClasse/"+id).then(function (res) {
+          /* attribution des données dans les champs approprié */
+            let data = res.data
+            $("#id").val(data.id)
+            $("#email").val(data.email)
+            $("#nom").val(data.nom)
+            $("#prenom").val(data.prenom)
+           
+        })
+        .catch(function (error) {
+            console.log("errr")
+            //console.log(error.request.message)
+        })
+    }
+  </script>
+    <!-- modal show -->
+
+
+<div class="modal fade" id="show" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal show des classes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+
+      <div class="modal-body">
+       <table class="table">
+        <thead>
+            <tr>
+                
+                <th>Nom</th>
+                <th>Image</th>
+                <th>Enseignant</th>
+                <th>Apprenant</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+        
+        <div id="email" > </div>
+        <div id="nom"> </div>
+        <div id="prenom"> </div>
+        </tbody>
+    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="doUpdate()">enregistrer</button>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+    <a href="{{ path('app_classe_new') }}">Create new</a>
 {% endblock %}

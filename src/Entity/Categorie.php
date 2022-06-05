@@ -18,24 +18,17 @@ class Categorie
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $discription;
-
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'categories')]
-    private $parent;
-
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
-    private $categories;
+    #[ORM\OneToMany(mappedBy: 'id_categorie', targetEntity: Cours::class)]
+    private $cours;
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        $this->cours = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-        
     }
 
     public function getNom(): ?string
@@ -50,62 +43,37 @@ class Categorie
         return $this;
     }
 
-    public function getDiscription(): ?string
-    {
-        return $this->discription;
-    }
-
-    public function setDiscription(string $discription): self
-    {
-        $this->discription = $discription;
-
-        return $this;
-    }
-
-    public function getParent(): ?self
-    {
-        return $this->parent;
-    }
-
-    public function setParent(?self $parent): self
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, self>
+     * @return Collection<int, Cours>
      */
-    public function getCategories(): Collection
+    public function getCours(): Collection
     {
-        return $this->categories;
+        return $this->cours;
     }
 
-    public function addCategory(self $category): self
+    public function addCour(Cours $cour): self
     {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-            $category->setParent($this);
+        if (!$this->cours->contains($cour)) {
+            $this->cours[] = $cour;
+            $cour->setIdCategorie($this);
         }
 
         return $this;
     }
 
-    public function removeCategory(self $category): self
+    public function removeCour(Cours $cour): self
     {
-        if ($this->categories->removeElement($category)) {
+        if ($this->cours->removeElement($cour)) {
             // set the owning side to null (unless already changed)
-            if ($category->getParent() === $this) {
-                $category->setParent(null);
+            if ($cour->getIdCategorie() === $this) {
+                $cour->setIdCategorie(null);
             }
         }
 
         return $this;
     }
-    public function __toString()
-    {
-        $res=$this->nom;
-        return (string) $res;
+
+    public function __toString(){
+        return $this->nom;
     }
 }
