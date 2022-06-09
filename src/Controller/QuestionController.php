@@ -106,7 +106,6 @@ class QuestionController extends AbstractController
             $user = $this->em->find(Question::class,(int)$data->id);
             $user->setNomQuestion($data->nom_question);
             $user->setIdCours($data->id_cours);
-           
             $user->setIdCours($manage);
             $user->setContent($data->content);
 

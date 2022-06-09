@@ -36,6 +36,7 @@ class Enseignant
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
 
+
     public function __construct()
     {
         $this->classes = new ArrayCollection();
@@ -170,4 +171,6 @@ class Enseignant
 
         return $this;
     }
+
+   
 }

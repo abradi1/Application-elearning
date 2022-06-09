@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AvisRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
@@ -21,6 +23,16 @@ class Avis
 
     #[ORM\Column(type: 'string', length: 255)]
     private $user_review;
+
+    #[ORM\ManyToOne(targetEntity: Cours::class, inversedBy: 'avis')]
+    private $cours;
+
+   
+
+    public function __construct()
+    {
+        $this->cours = new ArrayCollection();
+    }
 
   
 
@@ -64,6 +76,20 @@ class Avis
 
         return $this;
     }
+
+    public function getCours(): ?Cours
+    {
+        return $this->cours;
+    }
+
+    public function setCours(?Cours $cours): self
+    {
+        $this->cours = $cours;
+
+        return $this;
+    }
+
+    
 
    
 

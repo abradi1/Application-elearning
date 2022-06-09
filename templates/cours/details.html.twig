@@ -85,12 +85,12 @@
                     <div class="col-6">
                       <div class="d-flex align-items-center">
                         <div class="sw-5 d-inline-block position-relative me-3">
-                          <img src="{{ asset('img/course/small/'~ ce.image) }}" class="img-fluid rounded-xl" alt="thumb" />
+                          <img src="" class="img-fluid rounded-xl" alt="thumb" />
                         </div>
                         
                         <div class="d-inline-block">
                         <h2 class="small-title">Enseignant</h2>
-                          <a href="#">{{ce.nom}} {{ce.prenom}}</a>
+                          <a href="#"></a>
                           <div class="text-muted text-small">Development Lead</div>
                         </div>
                         
@@ -273,34 +273,27 @@
                 <div class="card-body">
                   <!-- Total Rating Start -->
                   <div class="row mb-5">
-                    <div class="col-12 col-sm-auto mb-3 mb-sm-0">
-                      <div
-                        class="w-100 sw-sm-19 sw-md-23 border border-separator-light sh-16 rounded-md d-flex flex-column align-items-center justify-content-center"
-                      >
-                        <div class="cta-1 text-alternate mb-2">4.8</div>
-                        <div>
-                          <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
-                            <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="5">
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                            </select>
-                          </div>
-                          <span class="text-muted">(22)</span>
-                        </div>
-                      </div>
-                    </div>
+                    
                     <div class="col">
+                    
                       <div class="row align-items-center">
                         <div class="col">
                           <div class="progress mb-1">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                          {% set somme = 0 %}
+                                 
+                                    {% for r in rating %}
+                                    
+                                     {% if r.user_rating == 5 %}
+                                    
+                              {% set somme = (somme+ r.user_rating)/5 %}
+                              {% endif %}
+                              
+                             {% endfor %}
+                            <div class="progress-bar" role="progressbar" aria-valuenow={{somme*100}} aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                         <div class="col-auto">
-                          <span class="me-3 text-muted text-small">%80</span>
+                          <span class="me-3 text-muted text-small"> %{{somme*100}}</span>
                           <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
                             <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="5">
                               <option value="1">1</option>
@@ -315,11 +308,20 @@
                       <div class="row align-items-center">
                         <div class="col">
                           <div class="progress mb-1">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                          {% set s1 = 0 %}
+                                 
+                                    {% for r in rating %}
+                                    
+                                     {% if r.user_rating == 4 %}
+                                    
+                              {% set s1 = (s1+ r.user_rating)/5 %}
+                              {% endif %}
+                             {% endfor %}
+                            <div class="progress-bar" role="progressbar" aria-valuenow={{s1*100}} aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                         <div class="col-auto">
-                          <span class="me-3 text-muted text-small">%10</span>
+                          <span class="me-3 text-muted text-small">%{{s1*100}}</span>
                           <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
                             <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="4">
                               <option value="1">1</option>
@@ -334,11 +336,20 @@
                       <div class="row align-items-center">
                         <div class="col">
                           <div class="progress mb-1">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                          {% set s3 = 0 %}
+                                 
+                                    {% for r in rating %}
+                                    
+                                     {% if r.user_rating == 3 %}
+                                    
+                              {% set s3 = (s3+ r.user_rating)/5 %}
+                              {% endif %}
+                             {% endfor %}
+                            <div class="progress-bar" role="progressbar" aria-valuenow={{s3*100}} aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                         <div class="col-auto">
-                          <span class="me-3 text-muted text-small">%5</span>
+                          <span class="me-3 text-muted text-small">%{{s3*100}}</span>
                           <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
                             <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="3">
                               <option value="1">1</option>
@@ -353,11 +364,20 @@
                       <div class="row align-items-center">
                         <div class="col">
                           <div class="progress mb-1">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          {% set s4 = 0 %}
+                                 
+                                    {% for r in rating %}
+                                    
+                                     {% if r.user_rating == 2 %}
+                                    
+                              {% set s4 = (s4+ r.user_rating)/5 %}
+                              {% endif %}
+                             {% endfor %}
+                            <div class="progress-bar" role="progressbar" aria-valuenow={{s4*100}} aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                         <div class="col-auto">
-                          <span class="me-3 text-muted text-small">%0</span>
+                          <span class="me-3 text-muted text-small">%{{s4*100}}</span>
                           <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
                             <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="2">
                               <option value="1">1</option>
@@ -372,11 +392,24 @@
                       <div class="row align-items-center">
                         <div class="col">
                           <div class="progress mb-1">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                          {% set s5 = 0 %}
+                                 
+                                    {% for r in rating %}
+                                    
+                                     {% if r.user_rating == 1 %}
+                                    
+                              {% set s5= (s5+ r.user_rating)/5 %}
+                              {% endif %}
+                             {% endfor %}
+
+
+
+          
+                            <div class="progress-bar" role="progressbar" aria-valuenow={{s5*100}} aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                         <div class="col-auto">
-                          <span class="me-3 text-muted text-small">%5</span>
+                          <span class="me-3 text-muted text-small">%{{s5*100}}</span>
                           <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
                             <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="1">
                               <option value="1">1</option>
@@ -387,10 +420,42 @@
                             </select>
                           </div>
                         </div>
+                        
+                      </div>
+
+                    </div>
+                   
+                    <div class="col-12 col-sm-auto mb-3 mb-sm-0">
+                      <div
+                        class="w-100 sw-sm-19 sw-md-23 border border-separator-light sh-16 rounded-md d-flex flex-column align-items-center justify-content-center"
+                      >
+   
+                     
+
+                        <div class="cta-1 text-alternate mb-2"> {{((somme+s1+s3+s4+s5)/5)*10}}</div>
+                        <div>
+                          <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
+                            <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating={{((somme+s1+s3+s4+s5)/5)*10}}  >
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+                          </div>
+                          <span class="text-muted">(22)</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <!-- Total Rating End -->
+
+                   <script>
+                  const element = document.getElementsByTagName("aria-valuenow");
+                    const x = document.querySelectorAll("progress-bar");
+
+                    console.log(x);
+                    </script>
 
                   <!-- Comments Start -->
                   <div class="d-flex align-items-center border-bottom border-separator-light pb-3">

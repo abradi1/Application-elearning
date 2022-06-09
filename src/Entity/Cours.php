@@ -39,10 +39,16 @@ class Cours
     #[ORM\Column(type: 'string', length: 255)]
     private $video;
 
+    #[ORM\OneToMany(mappedBy: 'cours', targetEntity: Avis::class)]
+    private $avis;
+
+   
+
     public function __construct()
     {
         $this->lessons = new ArrayCollection();
         $this->questions = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -185,4 +191,38 @@ class Cours
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): self
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis[] = $avi;
+            $avi->setCours($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): self
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getCours() === $this) {
+                $avi->setCours(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    
+
 }

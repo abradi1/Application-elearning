@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/cours')]
 class CoursController extends AbstractController
 {
+
+
     #[Route('/', name: 'app_cours_index', methods: ['GET'])]
     public function index(CoursRepository $coursRepository): Response
     {
@@ -66,21 +68,17 @@ class CoursController extends AbstractController
         ]);
     }
 
-    /*#[Route('/{id}', name: 'app_cours_show', methods: ['GET'])]
-    public function show(Cours $cour): Response
-    {
-        return $this->render('cours/show.html.twig', [
-            'cour' => $cour,
-        ]);
-    }*/
-
+   
   /**
      * @Route("/show_cours" , name="app_cours_show")
      */
     public function show(CoursRepository $coursRepository): Response
     {
+        $cours=$coursRepository->findAll();
+        
         return $this->render('cours/show.html.twig', [
-            'cours' => $coursRepository->findAll(),
+            'cours' => $cours,
+        
         ]);
     }
 
@@ -89,11 +87,14 @@ class CoursController extends AbstractController
      */
     public function details(CoursRepository $coursRepository,$id): Response
     {
+        //dd($c);
         $cours= $coursRepository->find($id);
-        //dd($cours->getIdEnseignant());
+        $allRatingOfCours = $coursRepository->getAllRatingOfTheCourse($id);
+       
+        
         return $this->render('cours/details.html.twig', [
             'cours' => $cours,
-            'ce'=>$cours->getIdEnseignant()
+            'rating' => $allRatingOfCours
         ]);
     }
 
@@ -135,4 +136,8 @@ class CoursController extends AbstractController
 
         return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
+
+    
 }

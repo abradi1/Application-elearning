@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ProfilController extends AbstractController
 {
@@ -27,7 +28,7 @@ class ProfilController extends AbstractController
      * @Route("profil/{id}", name="app_profil")
      */
    
-    public function index(ManagerRegistry $doctrine,Request $request,$id)
+    /*public function index(ManagerRegistry $doctrine,Request $request,$id)
     {
 
         $alluser=$doctrine->getRepository(User::class)->find($id);
@@ -38,47 +39,90 @@ class ProfilController extends AbstractController
             //'form' =>$form->createView()
             
         ]);
-}
-
+}*/
 
 /**
-     * @Route("getInfoProfil/{id}", name="getInfoProfil")
+     * @Route("profil", name="app_profil")
      */
-    public function getInfoProfil($id)
-    // ici on récupère toute les infos de l'enseignant en fct de l'id passé en paramtre
+   
+    public function index(ManagerRegistry $doctrine,Request $request)
     {
-        try{
 
-            $user = $this->em->getRepository(User::class)->getOneUser((int)$id);
+        $alluser=$doctrine->getRepository(User::class)->findAll();
+        //dd($alluser);
+
+        return $this->render('profil/index.html.twig', [
+            'alluser' => $alluser
+            //'form' =>$form->createView()
+            
+        ]);
+}
+
+/**
+     * @Route("profil_settings", name="app_profil_settings")
+     */
+   
+    public function settings(ManagerRegistry $doctrine,Request $request)
+    {
+
+        $alluser=$doctrine->getRepository(User::class)->findAll();
+    
+
+        return $this->render('profil/settings.html.twig', [
+            'alluser' => $alluser
+            //'form' =>$form->createView()
+            
+        ]);
+}
+
+        /**
+     * @Route("profil_edit/{id}", name="profil_edit")
+     */
+   
+    public function EditProfil(User $user,ManagerRegistry $doctrine,Request $request)
+    { 
+        $entityManager = $doctrine->getManager();
+        $form=$this->createFormBuilder($user)
+            // Configuration des paramètre du formulaire
+                    ->add('email',EmailType::class)
+                    ->add('nom',TextType::class)
+                    ->add('prenom',TextType::class)
+                    ->add('location',TextType::class)
+                    ->add('birthday',TextType::class)
+                    ->add('biographie',TextareaType::class)
+                    ->add('gender',ChoiceType::class,  [
+                        'choices' => [
+                            'Female' => 1,
+                            'Male' => 2,
+                            'Other' => 3,
+                        ],
+                    ])
+                    ->add('enregistrer',SubmitType::class)
+                    ->getForm();
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid() ) {
+            $user = $form->getData();
+            $entityManager->persist($user);
+            $entityManager->flush();
             
 
-            return $this->json($user[0],Response::HTTP_OK);
-        }catch(Exception $ex){
-            return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
+            $this->addFlash(
+                'success',
+                'Les informations de votre compte ont bien été modifiées.'
+            );
+            
         }
+        return $this->render('profil/settings.html.twig', [
+            'form' => $form->createView(),
+
+        ]);
+
+
     }
 
-     /**
-     * @Route("codeEditProfil", name="codeEditProfil")
-     */
-    public function codeEditProfil(Request $request)
-    {
-        try{
-            $data = json_decode($request->getContent());
 
-            $user = $this->em->find(User::class,(int)$data->id);
-            $user->setEmail($data->email);
-            //$user->setPassword($data->password);
-            $user->setNom($data->nom);
-            $user->setPrenom($data->prenom);
-           
 
-            $this->em->persist($user);
-            $this->em->flush();
 
-            return $this->json("success",Response::HTTP_OK);
-        }catch(Exception $ex){
-            return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
-        }
-    }
+
 }

@@ -42,4 +42,24 @@ class CoursRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    /* Fonction pour récupérer toutes les notes du cours pour en faire la moyenne */
+    public function getAllRatingOfTheCourse($id){
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+           
+            'SELECT a.user_rating
+            FROM App\Entity\Avis a, App\Entity\Cours c
+            WHERE c.id = a.cours and a.cours= :id
+            '
+        )->setParameter('id', $id);
+
+        // returns an array of Product objects
+        return $query->getResult();
+    
+    }
+    
+
+
 }

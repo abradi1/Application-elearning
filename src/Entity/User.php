@@ -12,10 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-/**
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorMap({"user" = "User"})
- */
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -38,11 +35,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $location;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $birthday;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $biographie;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $gender;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $image;
+
+   
+
     
 
     public function __construct()
     {
         $this->classes = new ArrayCollection();
+        $this->enseignants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,4 +179,69 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $res=$this->nom;
         return (string) $res;
     }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function getBirthday(): ?string
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(string $birthday): self
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function getBiographie(): ?string
+    {
+        return $this->biographie;
+    }
+
+    public function setBiographie(string $biographie): self
+    {
+        $this->biographie = $biographie;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    
+
+  
+
 }

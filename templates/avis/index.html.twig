@@ -16,7 +16,7 @@
 {% block title %}Hello AvisController!{% endblock %}
 
 {% block body %}
-
+              
 
 
       <!-- Button trigger modal -->
@@ -47,15 +47,7 @@
         <i class="bi-star-fill" data-value="5"></i>
         </div>
 
-                <div class="br-wrapper br-theme-cs-icon d-inline-block">
-                              <select class="rating" name="rating" autocomplete="off" data-initial-rating="0" >
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                              </select>
-                </div>
+               
        
 
 
@@ -74,7 +66,10 @@
   </div>
 </div>
 </div>
+<h2>Liste des avis </h2>
                 {% for a in avis %}
+
+                <p>{{a.userName}}</p>
        
        <div class="br-wrapper br-theme-cs-icon d-inline-block">
                       <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating={{a.userRating}}>
@@ -94,7 +89,7 @@
                             const nouvelleetoile = document.querySelectorAll(".rating");
 
                             console.log(stars);
-                            console.log(nouvelleetoile);
+                            
                             
                             // on va chercher l'input
                             const note = document.querySelector("#form_user_rating");

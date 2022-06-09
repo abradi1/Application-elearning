@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Apprenant;
+use App\Entity\Cours;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -143,6 +144,26 @@ class ApprenantController extends AbstractController
         }catch(Exception $ex){
             return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
         }
+    }
+
+
+      /**
+     * @Route("/liste_cours" , name="liste_cours")
+     */
+
+    public function list(Request $request,ManagerRegistry $doctrine){
+        //Initialisation des paramètres
+        $entityManager = $doctrine->getManager();
+  
+        $allapprenant=$doctrine->getRepository(Cours::class)->findAll();
+  
+
+  
+        return $this->render('apprenant/test.html.twig', [
+            'allapprenant' => $allapprenant,
+            'request' =>$request
+            
+        ]);
     }
 
 }
