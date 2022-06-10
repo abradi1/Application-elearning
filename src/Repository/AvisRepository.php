@@ -63,4 +63,13 @@ class AvisRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function getOneAvis($id)
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.id='.$id)
+        ->getQuery()
+        ->getArrayResult()
+    ;
+}
 }

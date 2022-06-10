@@ -13,6 +13,7 @@
                 <th>Image</th>
                 <th>Enseignant</th>
                 <th>Categorie</th>
+                <th>Apprenant</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
                             class="card-img card-img-horizontal-lg sh-18 sw-lg-16 h-lg-100">  </td>
                 <td>{{ cour.idEnseignant }}</td>
                 <td>{{ cour.idCategorie }}</td>
+                <td></td>
                 <td>
                     <a href="{{ path('app_cours_show', {'id': cour.id}) }}">show</a>
                     <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">edit</a>
