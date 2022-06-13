@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Teacher index{% endblock %}
+
+{% block body %}
+    <h1>Teacher index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Password</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Location</th>
+                <th>Birthday</th>
+                <th>Biographie</th>
+                <th>Gender</th>
+                <th>Image</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for teacher in teachers %}
+            <tr>
+                <td>{{ teacher.id }}</td>
+                <td>{{ teacher.email }}</td>
+                <td>{{ teacher.roles ? teacher.roles|json_encode : '' }}</td>
+                <td>{{ teacher.password }}</td>
+                <td>{{ teacher.nom }}</td>
+                <td>{{ teacher.prenom }}</td>
+                <td>{{ teacher.location }}</td>
+                <td>{{ teacher.birthday }}</td>
+                <td>{{ teacher.biographie }}</td>
+                <td>{{ teacher.gender }}</td>
+                <td>{{ teacher.image }}</td>
+                <td>
+                    <a href="{{ path('app_teacher_show', {'id': teacher.id}) }}">show</a>
+                    <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_teacher_new') }}">Create new</a>
+{% endblock %}
