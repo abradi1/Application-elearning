@@ -9,6 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Enseignant;
+use App\Entity\Apprenant;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use App\Entity\Categorie;
 
 class CoursType extends AbstractType
@@ -30,6 +33,9 @@ class CoursType extends AbstractType
                 'choice_label'=>'nom',
                 'expanded'=>false,
                 'multiple'=>false
+            ])
+            ->add('apprenant',CollectionType::class, [
+                'entry_type'=> ChoiceType::class
             ])
             ->add('prix')
         ;

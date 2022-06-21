@@ -41,10 +41,17 @@ class Apprenant implements PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
 
+    #[ORM\ManyToMany(targetEntity: Cours::class, mappedBy: 'apprenant')]
+    private $cours;
+
+    #[ORM\ManyToOne(targetEntity: Avis::class, inversedBy: 'apprenants')]
+    private $avis;
+
     public function __construct()
     {
         $this->classes = new ArrayCollection();
         $this->certificats = new ArrayCollection();
+        $this->cours = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,6 +208,45 @@ class Apprenant implements PasswordAuthenticatedUserInterface
     public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cours>
+     */
+    public function getCours(): Collection
+    {
+        return $this->cours;
+    }
+
+    public function addCour(Cours $cour): self
+    {
+        if (!$this->cours->contains($cour)) {
+            $this->cours[] = $cour;
+            $cour->addApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCour(Cours $cour): self
+    {
+        if ($this->cours->removeElement($cour)) {
+            $cour->removeApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function getAvis(): ?Avis
+    {
+        return $this->avis;
+    }
+
+    public function setAvis(?Avis $avis): self
+    {
+        $this->avis = $avis;
 
         return $this;
     }

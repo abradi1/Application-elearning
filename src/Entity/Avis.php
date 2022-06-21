@@ -27,11 +27,15 @@ class Avis
     #[ORM\ManyToOne(targetEntity: Cours::class, inversedBy: 'avis')]
     private $cours;
 
+    #[ORM\OneToMany(mappedBy: 'avis', targetEntity: Apprenant::class)]
+    private $apprenants;
+
    
 
     public function __construct()
     {
         $this->cours = new ArrayCollection();
+        $this->apprenants = new ArrayCollection();
     }
 
   
@@ -85,6 +89,36 @@ class Avis
     public function setCours(?Cours $cours): self
     {
         $this->cours = $cours;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Apprenant>
+     */
+    public function getApprenants(): Collection
+    {
+        return $this->apprenants;
+    }
+
+    public function addApprenant(Apprenant $apprenant): self
+    {
+        if (!$this->apprenants->contains($apprenant)) {
+            $this->apprenants[] = $apprenant;
+            $apprenant->setAvis($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApprenant(Apprenant $apprenant): self
+    {
+        if ($this->apprenants->removeElement($apprenant)) {
+            // set the owning side to null (unless already changed)
+            if ($apprenant->getAvis() === $this) {
+                $apprenant->setAvis(null);
+            }
+        }
 
         return $this;
     }

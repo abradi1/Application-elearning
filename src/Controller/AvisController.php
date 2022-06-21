@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Avis;
+use App\Entity\Cours;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -83,5 +85,69 @@ class AvisController extends AbstractController
         ]);
   
     }
+
+    /**
+     * @Route("/delete_avis/{id}" , name="delete_avis")
+     */
+    public function deleteAvis($id,ManagerRegistry $doctrine) {
+
+        $em = $this->getDoctrine()->getManager();
+        $user=$doctrine->getRepository(Avis::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException(
+                'Il n y aucun apprenant avec l id suivant: ' . $id
+            );
+        }
+
+        $em->remove($user);
+        $em->flush();
+    
+        return $this->redirect($this->generateUrl('app_avis'));
+
+    }
+
+    /**
+     * @Route("getInfoAvis/{id}", name="getInfoAvis")
+     */
+    public function getInfoAvis($id)
+    // ici on récupère toute les infos de l'enseignant en fct de l'id passé en paramtre
+    {
+        try{
+
+            $user = $this->em->getRepository(Avis::class)->getOneAvis((int)$id);
+            
+
+            return $this->json($user[0],Response::HTTP_OK);
+        }catch(Exception $ex){
+            return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @Route("codeEditAvis", name="codeEditAvis")
+     */
+    public function codeEditAvis(Request $request)
+    {
+        try{
+            $data = json_decode($request->getContent());
+
+            $user = $this->em->find(Avis::class,(int)$data->id);
+            $user->setUserName($data->user_name);
+            $user->setUserRating($data->user_rating);
+            $user->setUserReview($data->user_review);
+           
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+            return $this->json("success",Response::HTTP_OK);
+        }catch(Exception $ex){
+            return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+
+      
 
 }

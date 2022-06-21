@@ -18,8 +18,11 @@ class CoursController extends AbstractController
     #[Route('/', name: 'app_cours_index', methods: ['GET'])]
     public function index(CoursRepository $coursRepository): Response
     {
+        $cours = $coursRepository->findAll();
+        
+     
         return $this->render('cours/index.html.twig', [
-            'cours' => $coursRepository->findAll(),
+            'cours' => $cours,
         ]);
     }
 
@@ -89,12 +92,19 @@ class CoursController extends AbstractController
     {
         //dd($c);
         $cours= $coursRepository->find($id);
+        $c= $coursRepository->findAll();
         $allRatingOfCours = $coursRepository->getAllRatingOfTheCourse($id);
+        $allApprenantsInscriptAuCours = $coursRepository->getAllApprenantInscritAuCours(4);
+
+        //dd($allApprenantsInscriptAuCours);
+      
+     
        
         
         return $this->render('cours/details.html.twig', [
             'cours' => $cours,
-            'rating' => $allRatingOfCours
+            'rating' => $allRatingOfCours,
+            'apprenant' => $allApprenantsInscriptAuCours
         ]);
     }
 

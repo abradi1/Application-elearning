@@ -27,10 +27,9 @@ class UserController extends AbstractController
     }
     /**
      * @Route("/user" , name="app_user")
-     * @IsGranted("ROLE_ADMIN",message= "Vous n'avez pas le droit d'accéder à cette page")
+     
      */
-    
-    public function index(ManagerRegistry $doctrine,User $user=null,Request $request,PaginatorInterface $paginator): Response
+    public function index(ManagerRegistry $doctrine,User $user=null,Request $request): Response
     {
 
         $alluser=$doctrine->getRepository(User::class)->findAll();
@@ -67,15 +66,10 @@ class UserController extends AbstractController
                         return $this->redirectToRoute('app_user');
                     }
 
-                    $users = $paginator->paginate(
-                        $alluser, // Requête contenant les données à paginer (ici nos articles)
-                        $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-                        4 // Nombre de résultats par page
-                    );
+                  
 
         return $this->render('user/index.html.twig', [
             'alluser' => $alluser,
-            'users' => $users,
             'form' =>$form->createView()
             
         ]);

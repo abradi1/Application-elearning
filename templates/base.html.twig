@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="{{asset('css/vendor/glide.core.min.css')}}" />
     <link rel="stylesheet" href="{{asset('css/styles.css')}}" />
     <link rel="stylesheet" href="{{asset('css/main.css')}}" />
+  
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">  </head>
 
   <body>
@@ -46,7 +47,7 @@
         <div class="nav-content d-flex">
           <!-- Logo Start -->
           <div class="logo position-relative">
-            <a href="{{path ('liste_cours')}}">
+            <a href="">
               <!-- Logo can be added directly -->
                <!--<img src="img/logo/logo-purple-dark.svg" alt="logo" /> -->
 
@@ -70,9 +71,12 @@
           <!-- User Menu Start -->
           <div class="user-container d-flex">
             <a href="#" class="d-flex user position-relative" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img class="profile" alt="profile" src="img/profile/profile-11.webp" />
+              
+    
+
                 <!-- app.user.image -->
                 {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                <img id="image_profil" src="{{ asset('img/course/small/'~ app.user.image) }}" alt="profile"  class="profile">
                 <div class="name">{{app.user.prenom }} {{app.user.nom }}</div>
                           {%endif%}
               
@@ -175,24 +179,7 @@
           <!-- Menu Start -->
           <div class="menu-container flex-grow-1">
             <ul id="menu" class="menu">
-              <li>
-                <a href="{{path('app_front')}}">
-                  <i data-acorn-icon="home-garage" class="icon" data-acorn-size="18"></i>
-                  <span class="label">Dashboards</span>
-                </a>
-                <ul id="dashboards">
-                  <li>
-                    <a href="Dashboards.Elearning.html">
-                      <span class="label">Elearning</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Dashboards.School.html">
-                      <span class="label">School</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+             
               <li>
                 <a href="#courses">
                   <i data-acorn-icon="online-class" class="icon" data-acorn-size="18"></i>
@@ -209,96 +196,18 @@
                       <span class="label">List</span>
                     </a>
                   </li>
-                  <li>
-                    <a href="{{path ('app_cours_index')}}">
-                      <span class="label">Detail</span>
-                    </a>
-                  </li>
+                  
                 </ul>
               </li>
-              <li>
-                <a href="#quiz">
+
+            <li>
+                <a href="{{path('app_crud')}}">
                   <i data-acorn-icon="quiz" class="icon" data-acorn-size="18"></i>
-                  <span class="label">Quiz</span>
+                  <span class="label">CRUD des tables</span>
                 </a>
-                <ul id="quiz">
-                  <li>
-                    <a href="Quiz.List.html">
-                      <span class="label">List</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Quiz.Detail.html">
-                      <span class="label">Detail</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Quiz.Result.html">
-                      <span class="label">Result</span>
-                    </a>
-                  </li>
-                </ul>
+              
               </li>
-              <li>
-                <a href="#paths">
-                  <i data-acorn-icon="destination" class="icon" data-acorn-size="18"></i>
-                  <span class="label">Paths</span>
-                </a>
-                <ul id="paths">
-                  <li>
-                    <a href="Path.List.html">
-                      <span class="label">List</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Path.Detail.html">
-                      <span class="label">Detail</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#instructors">
-                  <i data-acorn-icon="lecture" class="icon" data-acorn-size="18"></i>
-                  <span class="label">Instructors</span>
-                </a>
-                <ul id="instructors">
-                  <li>
-                    <a href="Instructor.List.html">
-                      <span class="label">List</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Instructor.Detail.html">
-                      <span class="label">Detail</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#miscellaneous">
-                  <i data-acorn-icon="layout-5" class="icon" data-acorn-size="18"></i>
-                  <span class="label">Miscellaneous</span>
-                </a>
-                <ul id="miscellaneous">
-                  <li>
-                    <a href="Misc.Player.html">
-                      <span class="label">Player</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Misc.Material.html">
-                      <span class="label">Material</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="Misc.Syllabus.html">
-                      <span class="label">Syllabus</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
+
           </div>
           <!-- Menu End -->
 

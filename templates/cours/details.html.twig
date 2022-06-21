@@ -84,16 +84,6 @@
                   <div class="row align-items-center">
                     <div class="col-6">
                       <div class="d-flex align-items-center">
-                        <div class="sw-5 d-inline-block position-relative me-3">
-                          <img src="" class="img-fluid rounded-xl" alt="thumb" />
-                        </div>
-                        
-                        <div class="d-inline-block">
-                        <h2 class="small-title">Enseignant</h2>
-                          <a href="#"></a>
-                          <div class="text-muted text-small">Development Lead</div>
-                        </div>
-                        
                       </div>
                     </div>
                   </div>
@@ -459,74 +449,31 @@
 
                   <!-- Comments Start -->
                   <div class="d-flex align-items-center border-bottom border-separator-light pb-3">
+                  {% for a in apprenant %}
                     <div class="row g-0 w-100">
                       <div class="col-auto">
                         <div class="sw-5 me-3">
-                          <img src="img/profile/profile-1.webp" class="img-fluid rounded-xl" alt="thumb" />
+                          
+                          <img id="img" src="{{ asset('img/course/small/'~ a.image) }}" alt="thumb"  class="img-fluid rounded-xl">
                         </div>
                       </div>
                       <div class="col pe-3">
-                        <div>Cherish Kerr</div>
-                        <div class="text-muted text-small mb-2">2 days ago</div>
+                        <div>{{a.nom}}  {{a.prenom}}</div>
+                        
                         <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
-                          <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="5">
+                          <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating={{a.user_rating}}>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
                           </select>
-                        </div>
-                        <div class="text-medium text-alternate lh-1-25">Macaroon!</div>
-                      </div>
+                        
                     </div>
                   </div>
-                  <div class="d-flex align-items-center border-bottom border-separator-light pb-3 mt-3">
-                    <div class="row g-0 w-100">
-                      <div class="col-auto">
-                        <div class="sw-5 me-3">
-                          <img src="img/profile/profile-2.webp" class="img-fluid rounded-xl" alt="thumb" />
-                        </div>
-                      </div>
-                      <div class="col pe-3">
-                        <div>Olli Hawkins</div>
-                        <div class="text-muted text-small mb-2">3 days ago</div>
-                        <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
-                          <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="5">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </select>
-                        </div>
-                        <div class="text-medium text-alternate lh-1-25">Cupcake cake fruitcake. Powder chocolate bar soufflé gummi bears topping donut.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center mt-3">
-                    <div class="row g-0 w-100">
-                      <div class="col-auto">
-                        <div class="sw-5 me-3">
-                          <img src="img/profile/profile-3.webp" class="img-fluid rounded-xl" alt="thumb" />
-                        </div>
-                      </div>
-                      <div class="col pe-3">
-                        <div>Kirby Peters</div>
-                        <div class="text-muted text-small mb-2">3 days ago</div>
-                        <div class="br-wrapper br-theme-cs-icon d-inline-block mb-2">
-                          <select class="rating" name="rating" autocomplete="off" data-readonly="true" data-initial-rating="5">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </select>
-                        </div>
-                        <div class="text-medium text-alternate lh-1-25">Nice, very tasty.</div>
-                      </div>
-                    </div>
-                  </div>
+                 
+                   {% endfor %}
+                  
                   <!-- Comments End -->
                 </div>
               </div>

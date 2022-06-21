@@ -3,8 +3,21 @@
 {% block title %}Cours index{% endblock %}
 
 {% block body %}
-    <h1>Cours index</h1>
+<section class="scroll-section" id="title">
+  <div class="page-title-container">
+    <h1 class="mb-0 pb-0 display-4">Cours</h1>
+    <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
+      <ul class="breadcrumb pt-0">
+        <li class="breadcrumb-item"><a href="{{path('app_front')}}">Home</a></li>
+       
 
+      </ul>
+    </nav>
+    
+  </div>
+</section>
+    
+  
     <table class="table">
         <thead>
             <tr>
@@ -27,8 +40,13 @@
                 <td>{{ cour.idEnseignant }}</td>
                 <td>{{ cour.idCategorie }}</td>
                 <td>
-                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}">show</a>
-                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">edit</a>
+     
+                    <a 
+                    href="{{ path('app_cours_edit', {'id': cour.id}) }}" 
+                     class="btn btn-icon btn-icon-only btn-outline-secondary mb-1" >
+                     <i class="bi bi-pencil-square"></i>
+                    </a>
+                    
                 </td>
             </tr>
         {% else %}
@@ -39,11 +57,19 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_cours_new') }}">Create new</a>
+    
+                    <a 
+                    href="{{ path('app_cours_new') }}"  title="Ajouter"
+                     class="btn btn-icon btn-icon-only btn-outline-secondary mb-1" >
+                     <i class="bi bi-plus"></i>
+                    </a>
 
 
-
-
+            
+        </div>
+      </div>
+    </div>
+  </div>
 
 
     

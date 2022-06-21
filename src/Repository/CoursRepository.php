@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Cours;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use App\Entity\Filter;
 
 /**
  * @extends ServiceEntityRepository<Classe>
@@ -59,7 +59,57 @@ class CoursRepository extends ServiceEntityRepository
         return $query->getResult();
     
     }
-    
+
+   
+
+   
+
+        public function getAllApprenantInscritAuCours($id):array
+    {
+        $conn=$this->getEntityManager()->getConnection();
+        $sql='SELECT a.prenom, a.nom, a.image, av.user_rating FROM `cours_apprenant`ca , apprenant a, avis av ,cours c WHERE ca.apprenant_id=a.id and a.avis_id=av.id and c.id=av.cours_id and ca.cours_id='.$id; 
+   
+        $stmt=$conn->prepare($sql);
+        $result=$stmt->executeQuery();
+        return $result->fetchAllAssociative();
+    }
+   // SELECT a.prenom, a.nom, a.image, av.user_rating FROM `cours_apprenant`ca , apprenant a , avis av,cours c WHERE ca.apprenant_id=a.id and ca.cours_id=2 and a.avis_id=av.id  and c.id=av.cours_id;  
+
+   public function findSearch(Filter $filter): array
+   {
+       $query = $this
+               ->createQueryBuilder('p')
+               ->select('c','p')
+               ->join('p.id_categorie','c');
+
+
+               if(!empty($filter->mot)) {
+                   $query = $query
+                       ->andWhere('p.titre_cours LIKE :mot')
+                       ->setParameter('mot',"%{$filter->mot}%");
+               }
+
+               if(!empty($filter->min)) {
+                   $query = $query
+                   ->andWhere('p.prix >= :min')
+                   ->setParameter('min', $filter->min);
+               }
+
+               if(!empty($filter->max)) {
+                   $query = $query
+                   ->andWhere('p.prix <= :max')
+                   ->setParameter('max', $filter->max);
+               }
+
+               if(!empty($filter->categorie)) {
+                   $query = $query
+                       ->andWhere('c.id IN (:categorie)')
+                       ->setParameter('categorie',$filter->categorie);
+               }
+
+
+               return $query->getQuery()->getresult();
+   }
 
 
 }

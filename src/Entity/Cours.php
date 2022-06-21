@@ -42,6 +42,9 @@ class Cours
     #[ORM\OneToMany(mappedBy: 'cours', targetEntity: Avis::class)]
     private $avis;
 
+    #[ORM\ManyToMany(targetEntity: Apprenant::class, inversedBy: 'cours')]
+    private $apprenant;
+
    
 
     public function __construct()
@@ -49,6 +52,7 @@ class Cours
         $this->lessons = new ArrayCollection();
         $this->questions = new ArrayCollection();
         $this->avis = new ArrayCollection();
+        $this->apprenant = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,6 +222,30 @@ class Cours
                 $avi->setCours(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Apprenant>
+     */
+    public function getApprenant(): Collection
+    {
+        return $this->apprenant;
+    }
+
+    public function addApprenant(Apprenant $apprenant): self
+    {
+        if (!$this->apprenant->contains($apprenant)) {
+            $this->apprenant[] = $apprenant;
+        }
+
+        return $this;
+    }
+
+    public function removeApprenant(Apprenant $apprenant): self
+    {
+        $this->apprenant->removeElement($apprenant);
 
         return $this;
     }

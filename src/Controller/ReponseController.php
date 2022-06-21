@@ -9,70 +9,132 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Question;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
-#[Route('/reponse')]
+
 class ReponseController extends AbstractController
 {
-    #[Route('/', name: 'app_reponse_index', methods: ['GET'])]
-    public function index(ReponseRepository $reponseRepository): Response
+    private $em;
+    public function __construct(EntityManagerInterface $em)
     {
+        $this->em = $em;
+    }
+    #[Route('/reponse', name: 'app_reponse')]
+    
+    public function index(Request $request,ManagerRegistry $doctrine,Reponse $reponse=null){
+        //Initialisation des paramètres
+        $entityManager = $doctrine->getManager();
+  
+        $allreponse=$doctrine->getRepository(Reponse::class)->findAll();
+        $question = $doctrine->getRepository(Question::class)->findAll();
+        
+        
+  
+        if($reponse==null){
+            $reponse = new Reponse();
+        }
+            // Creation du formulaire
+            $form=$this->createFormBuilder($reponse)
+            // Configuration des paramètre du formulaire
+                    ->add('nom',TextType::class)
+                    ->add('id_question',EntityType::class, [
+                        'class'=> Question::class,
+                        'choice_label'=>'nom_question',
+                        'expanded'=>false,
+                        'multiple'=>false
+                    ])
+                    ->add('content', CKEditorType::class)
+                    ->getForm();
+  
+                    $form->handleRequest($request);
+  
+                    if($form->isSubmitted() && $form->isValid()){
+                        $entityManager->persist($reponse);
+                        $entityManager->flush();
+                        return $this->redirectToRoute('app_reponse');
+                    }
+                   
+  
         return $this->render('reponse/index.html.twig', [
-            'reponses' => $reponseRepository->findAll(),
+            'allreponse' => $allreponse,
+            'question'=>$question,
+            'form' =>$form->createView(),
+            
         ]);
     }
 
-    #[Route('/new', name: 'app_reponse_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ReponseRepository $reponseRepository): Response
+    /**
+     * @Route("getInfoReponse/{id}", name="getInfoReponse")
+     */
+    public function getInfoReponse($id):Response
+    // ici on récupère toute les infos de la question enseignant en fct de l'id passé en paramtre
     {
-        $reponse = new Reponse();
-        $form = $this->createForm(ReponseType::class, $reponse);
-        $form->handleRequest($request);
+        try{
+            $user = $this->em->find(Reponse::class,$id);
+            $data=[
+                "id"=>$user->getId(),
+                "nom"=>$user->getNom(),
+                "id_question"=>$user->getIdQuestion()->getId(),
+                "content"=>$user->getContent()
+            ];
+            
+            return $this->json($data);
+        }catch(Exception $ex){
+            return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
+        }
+    }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $reponseRepository->add($reponse, true);
+    /**
+     * @Route("codeEditReponse/{id}", name="codeEditReponse")
+     */
+    public function codeEditReponse(Request $request,int $id) :Response
+    {
+        try
+        {
+            $user = $this->em->find(Reponse::class,$id);
+            
+            $question=$this->em->find(Question::class,$request->request->get("id_question"));
+            
+           
+            $user->setNom($request->request->get("nom"));
+            $user->setIdQuestion($question);
+            $user->setContent($request->request->get("content"));
+          
+            $this->em->persist($user);
+            $this->em->flush();
 
-            return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
+            return $this->json("success",Response::HTTP_OK);
+        }
+        catch(Exception $ex)
+        {
+            return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @Route("/delete_reponse/{id}" , name="delete_reponse")
+     */
+    public function deleteReponse($id,ManagerRegistry $doctrine) {
+
+        $em = $this->getDoctrine()->getManager();
+        $user=$doctrine->getRepository(Reponse::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException(
+                'Il n y aucune reponse avec l id suivant: ' . $id
+            );
         }
 
-        return $this->renderForm('reponse/new.html.twig', [
-            'reponse' => $reponse,
-            'form' => $form,
-        ]);
-    }
+        $em->remove($user);
+        $em->flush();
+    
+        return $this->redirect($this->generateUrl('app_reponse'));
 
-    #[Route('/{id}', name: 'app_reponse_show', methods: ['GET'])]
-    public function show(Reponse $reponse): Response
-    {
-        return $this->render('reponse/show.html.twig', [
-            'reponse' => $reponse,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_reponse_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Reponse $reponse, ReponseRepository $reponseRepository): Response
-    {
-        $form = $this->createForm(ReponseType::class, $reponse);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $reponseRepository->add($reponse, true);
-
-            return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('reponse/edit.html.twig', [
-            'reponse' => $reponse,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_reponse_delete', methods: ['POST'])]
-    public function delete(Request $request, Reponse $reponse, ReponseRepository $reponseRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$reponse->getId(), $request->request->get('_token'))) {
-            $reponseRepository->remove($reponse, true);
-        }
-
-        return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
     }
 }

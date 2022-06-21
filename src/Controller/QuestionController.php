@@ -32,6 +32,7 @@ class QuestionController extends AbstractController
         $entityManager = $doctrine->getManager();
   
         $allquestion=$doctrine->getRepository(Question::class)->findAll();
+        $cours = $doctrine->getRepository(Cours::class)->findAll();
         
         
   
@@ -58,18 +59,11 @@ class QuestionController extends AbstractController
                         $entityManager->flush();
                         return $this->redirectToRoute('app_question');
                     }
-                    //dd(gettype($question->getIdCours()));
-                    
-                    $questions = $paginator->paginate(
-                        $allquestion, // Requête contenant les données à paginer (ici nos articles)
-                        $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-                        1 // Nombre de résultats par page
-                    );
+                   
   
         return $this->render('question/index.html.twig', [
             'allquestion' => $allquestion,
-            'question'=>$question,
-            'questions'=>$questions,
+            'cours'=>$cours,
             'form' =>$form->createView(),
             'request' =>$request
             
@@ -79,48 +73,70 @@ class QuestionController extends AbstractController
     /**
      * @Route("getInfoQuestion/{id}", name="getInfoQuestion")
      */
-    public function getInfoQuestion($id)
-    // ici on récupère toute les infos de l'enseignant en fct de l'id passé en paramtre
+    public function getInfoQuestion($id):Response
+    // ici on récupère toute les infos de la question enseignant en fct de l'id passé en paramtre
     {
         try{
-
-            $user = $this->em->getRepository(Question::class)->getOneQuestion((int)$id);
+            $user = $this->em->find(Question::class,$id);
+            $data=[
+                "id"=>$user->getId(),
+                "question"=>$user->getNomQuestion(),
+                "id_cours"=>$user->getIdCours()->getId(),
+                "content"=>$user->getContent()
+            ];
             
-            
-
-            return $this->json($user[0],Response::HTTP_OK);
+            return $this->json($data);
         }catch(Exception $ex){
             return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
         }
     }
 
     /**
-     * @Route("codeEditQuestion", name="codeEditQuestion")
+     * @Route("codeEditQuestion/{id}", name="codeEditQuestion")
      */
-    public function codeEditQuestion(Request $request)
+    public function codeEditQuestion(Request $request,int $id) :Response
     {
-      
-        try{
-            $data = json_decode($request->getContent());
-                
-            $user = $this->em->find(Question::class,(int)$data->id);
-            $user->setNomQuestion($data->nom_question);
-            $user->setIdCours($data->id_cours);
-            $user->setIdCours($manage);
-            $user->setContent($data->content);
-
-           
+        try
+        {
+            $user = $this->em->find(Question::class,$id);
             
-
-
+            $cours=$this->em->find(Cours::class,$request->request->get("id_cours"));
+            
+           
+            $user->setNomQuestion($request->request->get("nom_question"));
+            $user->setIdCours($cours);
+            $user->setContent($request->request->get("content"));
+          
             $this->em->persist($user);
             $this->em->flush();
 
             return $this->json("success",Response::HTTP_OK);
-        }catch(Exception $ex){
+        }
+        catch(Exception $ex)
+        {
             return $this->json($ex->getMessage(),Response::HTTP_BAD_REQUEST);
         }
     }
 
+    /**
+     * @Route("/delete_question/{id}" , name="delete_question")
+     */
+    public function deleteQuestion($id,ManagerRegistry $doctrine) {
+
+        $em = $this->getDoctrine()->getManager();
+        $user=$doctrine->getRepository(Question::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException(
+                'Il n y aucune question avec l id suivant: ' . $id
+            );
+        }
+
+        $em->remove($user);
+        $em->flush();
+    
+        return $this->redirect($this->generateUrl('app_question'));
+
+    }
 
 }

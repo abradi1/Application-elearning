@@ -17,6 +17,10 @@ use App\Entity\Apprenant;
 use App\Entity\Cours;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Repository\CoursRepository;
+
+use App\Entity\Filter;
+use App\Form\FilterFormType;
 
 class ApprenantController extends AbstractController
 {
@@ -28,7 +32,7 @@ class ApprenantController extends AbstractController
    
     /**
      * @Route("/apprenant" , name="app_apprenant")
-     * @IsGranted("ROLE_ADMIN",message= "Vous n'avez pas le droit d'accéder à cette page")
+     
      */
 
     public function index(Request $request,ManagerRegistry $doctrine,Apprenant $apprenant=null){
@@ -147,21 +151,30 @@ class ApprenantController extends AbstractController
     }
 
 
+    
       /**
      * @Route("/liste_cours" , name="liste_cours")
      */
 
-    public function list(Request $request,ManagerRegistry $doctrine){
+    public function list(Request $request,ManagerRegistry $doctrine,CoursRepository $a){
         //Initialisation des paramètres
         $entityManager = $doctrine->getManager();
   
         $allapprenant=$doctrine->getRepository(Cours::class)->findAll();
-  
-
+        
+        $data = new Filter();
+        $form = $this->createForm(FilterFormType::class, $data);
+        $form->handleRequest($request);
+       
+        $cours = $a->findSearch($data);
+        dump($cours);
+        //dump($data);
   
         return $this->render('apprenant/test.html.twig', [
             'allapprenant' => $allapprenant,
-            'request' =>$request
+            'form' => $form->createView(),
+            'cours' => $cours
+             
             
         ]);
     }
