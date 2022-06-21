@@ -12,12 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-/**
- * @ORM\Entity()
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"teacher"="Teacher"})
- */
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -40,23 +35,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $location;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $birthday;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $biographie;
-
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $gender;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $image;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $biographie;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $phone;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $image;
+
 
    
 
@@ -193,7 +189,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->location;
     }
 
-    public function setLocation(string $location): self
+    public function setLocation(?string $location): self
     {
         $this->location = $location;
 
@@ -205,21 +201,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->birthday;
     }
 
-    public function setBirthday(string $birthday): self
+    public function setBirthday(?string $birthday): self
     {
         $this->birthday = $birthday;
-
-        return $this;
-    }
-
-    public function getBiographie(): ?string
-    {
-        return $this->biographie;
-    }
-
-    public function setBiographie(string $biographie): self
-    {
-        $this->biographie = $biographie;
 
         return $this;
     }
@@ -229,21 +213,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->gender;
     }
 
-    public function setGender(string $gender): self
+    public function setGender(?string $gender): self
     {
         $this->gender = $gender;
 
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getBiographie(): ?string
     {
-        return $this->image;
+        return $this->biographie;
     }
 
-    public function setImage(string $image): self
+    public function setBiographie(?string $biographie): self
     {
-        $this->image = $image;
+        $this->biographie = $biographie;
 
         return $this;
     }
@@ -260,6 +244,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    
     
 
   

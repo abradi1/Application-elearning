@@ -10,11 +10,13 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class ProfilController extends AbstractController
 {
@@ -22,25 +24,7 @@ class ProfilController extends AbstractController
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-    }
-    
-    /**
-     * @Route("profil/{id}", name="app_profil")
-     */
-   
-    /*public function index(ManagerRegistry $doctrine,Request $request,$id)
-    {
-
-        $alluser=$doctrine->getRepository(User::class)->find($id);
-        //dd($alluser);
-
-        return $this->render('profil/index.html.twig', [
-            'alluser' => $alluser
-            //'form' =>$form->createView()
-            
-        ]);
-}*/
-
+    }  
 /**
      * @Route("profil", name="app_profil")
      */
@@ -56,24 +40,11 @@ class ProfilController extends AbstractController
             //'form' =>$form->createView()
             
         ]);
+
+        
 }
 
-/**
-     * @Route("profil_settings", name="app_profil_settings")
-     */
-   
-    public function settings(ManagerRegistry $doctrine,Request $request)
-    {
 
-        $alluser=$doctrine->getRepository(User::class)->findAll();
-    
-
-        return $this->render('profil/settings.html.twig', [
-            'alluser' => $alluser
-            //'form' =>$form->createView()
-            
-        ]);
-}
 
         /**
      * @Route("profil_edit/{id}", name="profil_edit")
@@ -90,6 +61,7 @@ class ProfilController extends AbstractController
                     ->add('location',TextType::class)
                     ->add('birthday',TextType::class)
                     ->add('biographie',TextareaType::class)
+                    ->add('image',FileType::class,array('data_class'=> null, 'label' => 'Image','label' => false ))
                     ->add('gender',ChoiceType::class,  [
                         'choices' => [
                             'Female' => 1,
@@ -97,11 +69,23 @@ class ProfilController extends AbstractController
                             'Other' => 3,
                         ],
                     ])
+                    ->add('phone',TextType::class)
                     ->add('enregistrer',SubmitType::class)
                     ->getForm();
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid() ) {
+            $file = $form->get('image')->getData();
+            
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+            try {
+                $file->move(
+                    $this->getParameter('images_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+               
+            }   $user->setImage($fileName);
             $user = $form->getData();
             $entityManager->persist($user);
             $entityManager->flush();
